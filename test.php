@@ -17,7 +17,6 @@ if( $ArticleReWriter->isExcessiveChars() ){
 	echo "1000 Characters Limit";
 } else {
 
-	$ArticleReWriter->getWordsToReWrite();
 	print_r($ArticleReWriter->getResults());
 }
 
