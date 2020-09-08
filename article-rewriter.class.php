@@ -1,7 +1,14 @@
 <?php 
 
-//START DATE: 20 JULY 2020
 
+/**
+* @author: Abdul Basit
+* @email: ifbasit@gmail.com
+* @Website: https://www.toolsbug.com
+* @title: A PHP Article Rewriter Class
+* 
+* 
+*/
 
 class ArticleReWriter {
 
@@ -16,9 +23,6 @@ class ArticleReWriter {
 
 	public $url;
 
-	public $html;
-
-	public $dom;
 
 	public $randomResults;
 
@@ -34,19 +38,19 @@ class ArticleReWriter {
 
 
 		//word length to rewrite
-		$this->minWordLength = 5;
+		$this->minWordLength 					= 5;
 
 		//when user ask to rewrite again, then it will get random 
-		$this->randomResults = $randomResults;
+		$this->randomResults 					= $randomResults;
 
 		//maximum characters allowed per request
-		$this->maxCharsAllowed = 1000;
+		$this->maxCharsAllowed 					= 1000;
 
 		//ignore words
-		if( $ignoreWords )  $this->ignoreWords = explode(',', $ignoreWords);
+		if( $ignoreWords )  $this->ignoreWords 	= explode(',', $ignoreWords);
 
 
-		$this->url = "https://www.thesaurus.com/browse/";
+		$this->url = "https://relatedwords.org/api/related?term=";
 	}
 
 
@@ -80,11 +84,11 @@ class ArticleReWriter {
 
 					if( $this->randomResults == false ){
 						//First and much similar word
-						$synonym = $synonyms[0]['term'];
+						$synonym 		= $synonyms[0]['term'];
 					} else {
 						//Pick random index
-						$randomIndex = rand(0,$totalSynonyms - 1);
-						$synonym = $synonyms[$randomIndex]['term'];
+						$randomIndex 	= rand(0,$totalSynonyms - 1);
+						$synonym 		= $synonyms[$randomIndex]['term'];
 					}
 					
 					$this->inputContent = str_replace($words[$i], $synonym, $this->inputContent);
@@ -113,38 +117,21 @@ class ArticleReWriter {
 		return $result;
 	}
 
-	private function initDOM(){
-		
-		//initializing DOM Document
-		$this->dom = new DOMDocument('1.0');
-		//Loading main HTML 
-		@$this->dom->loadHTML(mb_convert_encoding($this->html, 'HTML-ENTITIES', 'UTF-8'));
-	}
-
 
 	public function getSynonyms($word){
 
-		$url = $this->url.$word;
-		$this->html = $this->initCurl($url);
-
-		$this->initDOM();
+		$url 	= $this->url.$word;
+		$result = json_decode($this->initCurl($url));
+		$totalSynonyms = count($result);
 		$data = array();
-		$finder = new DomXPath($this->dom);
-    	$ul = $finder->query("//*[contains(@class, 'css-17d6qyx-WordGridLayoutBox et6tpn80')]")->item(0);
-		$j = 0;	
-		//lesser $similarity the higher Similarity
-		$similarity = 0;		
-		if (isset($ul)) {
-			foreach($ul->childNodes as $el ):
-				if( isset($el->nodeValue) ){
-					$similarity++;
-					$data[$j]['similarity'] = $similarity;
-					$data[$j]['term']		= $el->nodeValue;
-					$j++;
-				}
-			endforeach;
-		}
+		if( $totalSynonyms !== 0 ){
+			$similarity = 0;
+			for( $i = 0; $i < $totalSynonyms; $i++ ){
+				$data[$i]['similarity'] = $result[$i]->score;
+				$data[$i]['term'] 		= $result[$i]->word;
+			}
 
+		}
 		return $data;
 	}
 
