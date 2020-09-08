@@ -10,14 +10,14 @@ include 'article-rewriter.class.php';
 	//$ArticleReWriter = new ArticleReWriter(true,'foods,healthy');
 
 //Default
-$ArticleReWriter = new ArticleReWriter();
+$ArticleReWriter = new ArticleReWriterV2();
 $content = "Eating a variety of foods, regularly, and in the right amounts is the best formula for a healthy diet";
 $ArticleReWriter->inputContent($content);
+
 if( $ArticleReWriter->isExcessiveChars() ){
 	echo "1000 Characters Limit";
 } else {
-
-	print_r($ArticleReWriter->getResults());
+print_r($ArticleReWriter->getResults());
 }
 
 
