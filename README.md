@@ -23,7 +23,7 @@ Maximum characters you want to send in a request, 1000 would be great, default i
 The minimum word length that should be rewrite, probably you don't want to rewrite the word "is", so it should be 5, default is 5.
 
 ### Usage
-```
+```php
 $ArticleReWriter = new ArticleReWriter();
 $content = "Eating a variety of foods, regularly, and in the right amounts is the best formula for a healthy diet";
 $ArticleReWriter->inputContent($content);
